@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Here</title>
+
+    <link rel="icon" href="./files/logo.png">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Paytone+One&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+</head>
+
+<body class="register-body">
+
+<nav>
+    <img src="./files/logo.png" class="logo" alt="Logo" title="FirstFlight Travels">
+    <ul class="navbar">
+        <li>
+            <a href="./index.html">Home</a>
+            <a href="./index.html#locations">Locations</a>
+            <a href="./index.html#package">Packages</a>
+            <a href="./about.html">About Us</a>
+            <a href="./contact.html">Contact Us</a>
+        </li>
+    </ul>
+</nav>
+
+<section class="registration">
+    <div class="register-form">
+        <h1>Register <span>Here</span></h1>
+
+        <form id="registerForm">
+
+            <input type="text" name="myname1" placeholder="Name" required>
+            <input type="email" name="myemail" placeholder="Email-Id" required>
+            <input type="tel" name="myphone" id="phonenum" placeholder="Phone No." required>
+            <input type="number" name="myage" placeholder="Age" required>
+
+            <h4>Gender</h4>
+            <input type="radio" name="mygender" required> Male
+            &nbsp;&nbsp;&nbsp;
+            <input type="radio" name="mygender"> Female
+
+            <h4>Departure</h4>
+            <input type="datetime-local" name="departuredate" required>
+
+            <h4>Return</h4>
+            <input type="datetime-local" name="returndate" required>
+
+            <h4>Travel Destination</h4>
+            <input type="checkbox" name="td"> Kashmir
+            <input type="checkbox" name="td"> Istanbul
+            <input type="checkbox" name="td"> Paris
+            <input type="checkbox" name="td"> Bali
+            <input type="checkbox" name="td"> Dubai
+            <input type="checkbox" name="td"> Geneva
+            <input type="checkbox" name="td"> Port Blair
+            <input type="checkbox" name="td"> Rome
+
+            <br><br>
+
+            <h4>Package</h4>
+            <input type="radio" name="locations" required> Bronze
+            <input type="radio" name="locations"> Silver
+            <input type="radio" name="locations"> Gold
+            <input type="radio" name="locations"> Platinum
+
+            <br><br>
+
+            <input type="checkbox" checked required>
+            I accept the Terms & Conditions.
+
+            <br><br>
+
+            <input type="submit" value="Submit" class="submitbtn">
+
+        </form>
+    </div>
+</section>
+
+<!-- Footer -->
+
+<section class="footer">
+    <div class="foot">
+        <div class="footer-content">
+
+            <div class="footlinks">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="./register.html">Register</a></li>
+                    <li><a href="./about.html">About Us</a></li>
+                    <li><a href="./contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footlinks">
+                <h4>Connect</h4>
+                <div class="social">
+                    <a href="#"><i class='bx bxl-facebook'></i></a>
+                    <a href="#"><i class='bx bxl-instagram'></i></a>
+                    <a href="#"><i class='bx bxl-twitter'></i></a>
+                    <a href="#"><i class='bx bxl-linkedin'></i></a>
+                    <a href="#"><i class='bx bxl-github'></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="end">
+        <p>Copyright © 2026 Firstflight Travels All Rights Reserved.</p>
+    </div>
+</section>
+
+<!-- JavaScript -->
+
+<script>
+function validateform() {
+    var tel = document.getElementById("phonenum").value;
+
+    if (tel.length < 10) {
+        alert("Phone number must be at least 10 digits!");
+        return false;
+    } else if (isNaN(tel)) {
+        alert("Phone number should not include characters!");
+        return false;
+    }
+    return true;
+}
+
+document.getElementById("registerForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    if (!validateform()) return;
+
+    const destinations = [];
+    document.querySelectorAll('input[name="td"]:checked').forEach(el => {
+        destinations.push(el.nextSibling.textContent.trim());
+    });
+
+    const data = {
+        name: document.querySelector('input[name="myname1"]').value,
+        email: document.querySelector('input[name="myemail"]').value,
+        phone: document.querySelector('input[name="myphone"]').value,
+        age: document.querySelector('input[name="myage"]').value,
+        gender: document.querySelector('input[name="mygender"]:checked').nextSibling.textContent.trim(),
+        departure: document.querySelector('input[name="departuredate"]').value,
+        returnDate: document.querySelector('input[name="returndate"]').value,
+        destinations: destinations,
+        package: document.querySelector('input[name="locations"]:checked').nextSibling.textContent.trim()
+    };
+
+    try {
+        const res = await fetch("http://localhost:5000/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        alert(result.message);
+        document.getElementById("registerForm").reset();
+
+    } catch (error) {
+        alert("Server error. Try again later.");
+    }
+});
+</script>
+
+</body>
+</html>
+
